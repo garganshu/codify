@@ -11,7 +11,7 @@
     <TextView
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:text="Parking unoccupied"
+        android:text="Parking Done AT"
         android:textSize="16dp"
         android:textStyle="bold"
         android:layout_width="match_parent"

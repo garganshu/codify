@@ -57,9 +57,8 @@ public class MyApp extends Application implements BeaconConsumer {
         super.onCreate();
         instance = this;
         //check signed in
-        if (UserUtil.isUserLoggedIn()) {
             setUpBeacon();
-        }
+
     }
 
     public void setUpBeacon(){

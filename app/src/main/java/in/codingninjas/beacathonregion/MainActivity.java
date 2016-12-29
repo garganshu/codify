@@ -25,6 +25,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.altbeacon.beacon.Region;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
 
-    private ArrayAdapter<String> arrayAdapter;
+    private ArrayAdapter<Region> arrayAdapter;
 
     private LinearLayout mContainer;
 
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         onListRefreshListener = new MyApp.OnListRefreshListener() {
             @Override
             public void onListRefresh() {
-                notifyListChange();
+                //notifyListChange();
             }
         };
         MyApp.getInstance().onListRefreshListener = onListRefreshListener;
@@ -86,28 +88,15 @@ public class MainActivity extends AppCompatActivity {
         mContainer = (LinearLayout) findViewById(R.id.activity_main);
 
 
-        //  List<String> items = new ArrayList<>(MyApp.getInstance().parkingspotOccupiedList);
-        // arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
+          List<Region> items = new ArrayList<>(MyApp.getInstance().parkingList);
+          arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
 
-       /* ListView listView = (ListView)findViewById(R.id.list_view);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!MyApp.getInstance().parkingList.isEmpty()) {
-                    try {
-                        String beaconSSN = MyApp.getInstance().parkingList.get(i).getId2().toHexString();
-                        Intent regionIntent = new Intent(MainActivity.this,RegionDetailActivity.class);
-                        regionIntent.putExtra("beacon_ssn",beaconSSN);
-                        regionIntent.putExtra("name", MyApp.getInstance().parkingspotOccupiedList.get(i));
-                        startActivity(regionIntent);
-                    } catch (ArrayIndexOutOfBoundsException e) {*//*Do nothing*//*}
-                }
-            }
-        });
+        ListView listView = (ListView)findViewById(R.id.list_view);
         listView.setAdapter(arrayAdapter);
 
-    }*/
+
     }
+
     private boolean isBlueEnable() {
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
@@ -204,14 +193,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void notifyListChange(){
+  /*  private void notifyListChange(){
         if(arrayAdapter != null){
             List<String> items = new ArrayList<>(MyApp.getInstance().);
             arrayAdapter.clear();
             arrayAdapter.addAll(items);
             arrayAdapter.notifyDataSetChanged();
         }
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -254,45 +243,6 @@ public class MainActivity extends AppCompatActivity {
         manager.execute(call,listener);
     }
 
-
-    private void logout(){
-        progressDialog.setMessage("Logging Out...");
-        progressDialog.show();
-        Call<ApiResponse> logout = ApiClient.authorizedApiService().logout();
-        NetworkDataManager<ApiResponse> manager = new NetworkDataManager<>();
-        NetworkDataManager.NetworkResponseListener listener = manager.new NetworkResponseListener() {
-            @Override
-            public void onSuccessResponse(ApiResponse response) {
-                Log.i("TAG","logout Success");
-                if(progressDialog!=null){
-                    progressDialog.dismiss();
-                }
-                UserUtil.logout();
-                Intent login = new Intent(MainActivity.this,Login.class);
-                startActivity(login);
-                finish();
-            }
-
-            @Override
-            public void onFailure(int code, String message) {
-                if(progressDialog!=null){
-                    progressDialog.dismiss();
-                }
-                Log.i("TAG","logout Fail");
-                Snackbar.make(mContainer,"Unable to logut",Snackbar.LENGTH_SHORT).show();
-            }
-        };
-        manager.execute(logout,listener);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if(id == R.id.action_logout){
-            logout();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     protected void onStop() {
